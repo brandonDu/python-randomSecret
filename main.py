@@ -2,9 +2,6 @@ import csv
 import operator
 
 # 根据csv列表，读取信息并写入数组中。
-# [4, 18, 20, 22, 25, 33]
-# {'learnrate': 0.094, 'posibility': {'16': -0.259, '2': -0.734, '1': -0.682, '33': 0.849, '15': 0.308, '26': -0.504, '23': 0.416, '32': -0.504, '14': -0.569, '25': 0.762, '21': -0.432, '31': -0.362, '12': 0.357, '29': -0.395, '13': -0.85, '4': 0.73, '7': -0.468, '24': 0.442, '3': 0.096, '11': 0.126, '17': -0.214, '27': -0.194, '10': 0.614, '8': -0.428, '5': 0.192, '18': 0.713, '22': 0.878, '19': -0.391, '20': 0.638, '9': 0.05, '28': 0.126, '6': -0.325, '30': 0.13}, 'threshole': 0.879}
-# [Finished in 16200.3s]
 
 def main():
 	s_data = getCsv()
@@ -14,10 +11,8 @@ def main():
 	prePara = {}
 	rightNum =0;
 	
-	#study['threshole']=0.618 #define 0.1~100  #range(0.1,100,0.1)
-	#study['learnrate']=0.3 #define 0.01~1     #range(0.01,0.1,0.01)
-	thresholeArr = [round(i,4) for i in list(drange(0.1,1,0.01))]
-	learnrateArr = [round(i,4) for i in list(drange(0.01,0.1,0.01))]
+	thresholeArr = [round(i,4) for i in list(drange(0,1,0.1))]
+	learnrateArr = [round(i,4) for i in list(drange(2,3,0.1))]
 
 	for i in thresholeArr:
 		study['threshole']=i
@@ -35,9 +30,13 @@ def main():
 	prePara['posibility'] = initNumPossibility()
 	outpre = model(i_data,prePara)
 	preNums = selFromStudy(outpre)
-	print(preNums)
-	print(outpre)
-	#1	3	8	11	29	31	13
+	#print(preNums)
+	#print(outpre)
+	nextNum = ["1","3","8","11","29","31"]
+	nextNum = [int(i) for i in nextNum]
+	comparePreAndFac(outpre,nextNum)
+	#1	3	8	11	29	31
+	#print(outpre)
 
 
 def getCsv():
@@ -69,25 +68,25 @@ def anaTrain(data,train):
 	m = train['threshole']  #阈值
 	n = train['learnrate']  #学习速率
 	for x in vdata:
-		v = oposibility[str(x)]+n
+		v = oposibility[str(x)]*n
 		if v>=m:
-			v = v%m
-			oposibility[str(x)] = -1*v
+			v = 0.618*v
+			oposibility[str(x)] = v
 		elif v<=-1*m:
-			v = -1*(v%m)
-			oposibility[str(x)] = -1*v
+			v = -0.618*v
+			oposibility[str(x)] = v
 		else:
 			oposibility[str(x)] = v
 		oposibility[str(x)] = round(oposibility[str(x)],4)
 	##
 	for y in outdata:
-		v = oposibility[str(y)]-n
+		v = oposibility[str(y)]*n
 		if v>=m:
-			v = v%m
-			oposibility[str(y)] = -1*v
+			v = 0.618*v
+			oposibility[str(y)] = v
 		elif v<=-1*m:
-			v = -1*(v%m)
-			oposibility[str(y)] = -1*v
+			v = -0.618*v
+			oposibility[str(y)] = v
 		else:
 			oposibility[str(y)] = v
 		oposibility[str(y)] = round(oposibility[str(y)],4)
@@ -105,7 +104,8 @@ def initNumPossibility():
 ###通过比较概率最大的几个数字和实际数字的相同数量，判断概率字典的准确度。
 def comparePreAndFac(predic,fact):
 	preDict = predic['posibility'] #the predict set for every num.
-	preSelSix = dict(sorted(preDict.items(), key=operator.itemgetter(1), reverse=True)[:6])#获取概率最大的六个数字
+	n = 28
+	preSelSix = dict(sorted(preDict.items(), key=operator.itemgetter(1), reverse=True)[n:n+6])#获取概率最大的六个数字
 	# pB = dict(sorted(predictBlue.items(), key=operator.itemgetter(1), reverse=True)[:1])	
 	# pre = sorted([int(i) for i in list(pR.keys())])+[int(i) for i in list(pB.keys())]
 	pre = sorted([int(i) for i in list(preSelSix.keys())])
