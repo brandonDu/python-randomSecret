@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import csv
 import operator
-import random
+import json
 
 '''
 该算法的思路为，通过一个样本，进行训练和学习，对模型进行训练
@@ -14,6 +14,8 @@ import random
 # 根据csv列表，读取信息并写入数组中。
 
 def main():
+	
+
 	s_data = getCsv()
 	i_data = [[int(y) for y in x] for x in s_data]
 	r_data = [x[0:6] for x in i_data]
@@ -79,7 +81,7 @@ def initModel(n):
 	for i in range(0,m):
 		vrow = []
 		for j in range(0,n):
-			vrow.append(random.random())
+			vrow.append(1)
 		initList.append(vrow)
 	return initList
 #训练模型
@@ -97,6 +99,7 @@ def compare(fact,pre):
 	allNum = len(fact)
 	samNum = len([x for x in fact if x in pre])
 	return samNum/10
+
 
 
 
